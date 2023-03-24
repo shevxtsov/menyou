@@ -9,6 +9,7 @@ import { UserEntity } from './user.entity'
 import { JWT_SECRET } from 'src/config'
 import { IUserResponse } from './types/userResponse.interface'
 import { LoginUserDto } from './dto/loginUser.dto'
+import { IUserListResponse } from './types/userListResponse.interface'
 
 @Injectable()
 export class UserService {
@@ -68,6 +69,34 @@ export class UserService {
         delete user.password
 
         return user
+    }
+
+    async findAll(query: any): Promise<IUserListResponse> {
+        const queryBuilder = this._userRepository.createQueryBuilder('users')
+        const usersCount = await queryBuilder.getCount()
+
+        if (query.limit) {
+            queryBuilder.limit(query.limit)
+        }
+
+        if (query.offset) {
+            queryBuilder.offset(query.offset)
+        }
+
+        const users = await queryBuilder.getMany()
+
+        return {
+            users: users,
+            total: usersCount
+        }
+    }
+
+    findUserById(userId: number): Promise<UserEntity> {
+        return this._userRepository.findOne({
+            where: {
+                id: userId
+            }
+        })
     }
 
     private generateJwt(user: UserEntity): string {
