@@ -1,5 +1,14 @@
-import { BeforeInsert, Column, Entity, PrimaryGeneratedColumn } from 'typeorm'
+import {
+    BeforeInsert,
+    Column,
+    Entity,
+    JoinTable,
+    ManyToMany,
+    PrimaryGeneratedColumn
+} from 'typeorm'
 import { hash } from 'bcrypt'
+
+import { RoleEntity } from 'src/role/role.entity'
 
 @Entity({ name: 'users' })
 export class UserEntity {
@@ -31,4 +40,8 @@ export class UserEntity {
     async hashPassword(): Promise<void> {
         this.password = await hash(this.password, 10)
     }
+
+    @ManyToMany(() => RoleEntity)
+    @JoinTable()
+    role_list: RoleEntity[]
 }

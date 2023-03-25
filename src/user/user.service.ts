@@ -10,12 +10,16 @@ import { JWT_SECRET } from 'src/config'
 import { IUserResponse } from './types/userResponse.interface'
 import { LoginUserDto } from './dto/loginUser.dto'
 import { IUserListResponse } from './types/userListResponse.interface'
+import { RoleEntity } from 'src/role/role.entity'
+import { UpdateUserDto } from './dto/updateUser.dto'
 
 @Injectable()
 export class UserService {
     constructor(
         @InjectRepository(UserEntity)
-        private readonly _userRepository: Repository<UserEntity>
+        private readonly _userRepository: Repository<UserEntity>,
+        @InjectRepository(RoleEntity)
+        private readonly _roleRepository: Repository<RoleEntity>
     ) {}
 
     async createUser(createUserDto: CreateUserDto): Promise<UserEntity> {
@@ -35,12 +39,79 @@ export class UserService {
         const newUser = new UserEntity()
         Object.assign(newUser, createUserDto)
 
+        const roles: RoleEntity[] = []
+
+        for (const roleId of createUserDto.role_list) {
+            const role = await this._roleRepository.findOne({
+                where: {
+                    id: roleId
+                }
+            })
+
+            if (!role) {
+                throw new HttpException(
+                    `role with id=${roleId} doesnt exist`,
+                    HttpStatus.NOT_FOUND
+                )
+            }
+
+            roles.push(role)
+        }
+
+        newUser.role_list = roles
+
         return await this._userRepository.save(newUser)
+    }
+
+    async updateUser(
+        userId: number,
+        updateUserDto: UpdateUserDto
+    ): Promise<UserEntity> {
+        const user = await this._userRepository
+            .createQueryBuilder('users')
+            .leftJoinAndSelect('users.role_list', 'roles')
+            .addSelect('users.password')
+            .where('users.id = :id', {
+                id: userId
+            })
+            .getOne()
+
+        if (!user) {
+            throw new HttpException('user doesnt exist', HttpStatus.NOT_FOUND)
+        }
+
+        Object.assign(user, updateUserDto)
+
+        if (updateUserDto.role_list) {
+            const roles: RoleEntity[] = []
+
+            for (const roleId of updateUserDto.role_list) {
+                const role = await this._roleRepository.findOne({
+                    where: {
+                        id: roleId
+                    }
+                })
+
+                if (!role) {
+                    throw new HttpException(
+                        `role with id=${roleId} doesnt exist`,
+                        HttpStatus.NOT_FOUND
+                    )
+                }
+
+                roles.push(role)
+            }
+
+            user.role_list = roles
+        }
+
+        return this._userRepository.save(user)
     }
 
     async login(loginUserDto: LoginUserDto): Promise<UserEntity> {
         const user = await this._userRepository
             .createQueryBuilder('users')
+            .leftJoinAndSelect('users.role_list', 'roles')
             .addSelect('users.password')
             .where('users.username = :username', {
                 username: loginUserDto.username
@@ -72,7 +143,9 @@ export class UserService {
     }
 
     async findAll(query: any): Promise<IUserListResponse> {
-        const queryBuilder = this._userRepository.createQueryBuilder('users')
+        const queryBuilder = this._userRepository
+            .createQueryBuilder('users')
+            .leftJoinAndSelect('users.role_list', 'roles')
         const usersCount = await queryBuilder.getCount()
 
         if (query.limit) {
