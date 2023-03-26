@@ -1,4 +1,4 @@
-import { IsNotEmpty } from 'class-validator'
+import { ArrayMinSize, IsArray, IsNotEmpty } from 'class-validator'
 
 export class CreateUserDto {
     @IsNotEmpty()
@@ -12,6 +12,7 @@ export class CreateUserDto {
 
     readonly lastname: string
 
-    @IsNotEmpty()
+    @IsArray()
+    @ArrayMinSize(1)
     readonly role_list: number[]
 }
