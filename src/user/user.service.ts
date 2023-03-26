@@ -1,6 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
-import { Repository } from 'typeorm'
+import { In, Repository } from 'typeorm'
 import { sign } from 'jsonwebtoken'
 import { compare } from 'bcrypt'
 
@@ -39,24 +39,9 @@ export class UserService {
         const newUser = new UserEntity()
         Object.assign(newUser, createUserDto)
 
-        const roles: RoleEntity[] = []
-
-        for (const roleId of createUserDto.role_list) {
-            const role = await this._roleRepository.findOne({
-                where: {
-                    id: roleId
-                }
-            })
-
-            if (!role) {
-                throw new HttpException(
-                    `role with id=${roleId} doesnt exist`,
-                    HttpStatus.NOT_FOUND
-                )
-            }
-
-            roles.push(role)
-        }
+        const roles: RoleEntity[] = await this.getRolebyIds(
+            createUserDto.role_list
+        )
 
         newUser.role_list = roles
 
@@ -83,29 +68,29 @@ export class UserService {
         Object.assign(user, updateUserDto)
 
         if (updateUserDto.role_list) {
-            const roles: RoleEntity[] = []
-
-            for (const roleId of updateUserDto.role_list) {
-                const role = await this._roleRepository.findOne({
-                    where: {
-                        id: roleId
-                    }
-                })
-
-                if (!role) {
-                    throw new HttpException(
-                        `role with id=${roleId} doesnt exist`,
-                        HttpStatus.NOT_FOUND
-                    )
-                }
-
-                roles.push(role)
-            }
+            const roles: RoleEntity[] = await this.getRolebyIds(
+                updateUserDto.role_list
+            )
 
             user.role_list = roles
         }
 
         return this._userRepository.save(user)
+    }
+
+    async getRolebyIds(roles: number[]): Promise<RoleEntity[]> {
+        const returnedRoles = await this._roleRepository.find({
+            where: { id: In(roles) }
+        })
+
+        if (returnedRoles.length !== roles.length) {
+            throw new HttpException(
+                'Some of the roles you supplied were not found',
+                HttpStatus.NOT_FOUND
+            )
+        }
+
+        return returnedRoles
     }
 
     async login(loginUserDto: LoginUserDto): Promise<UserEntity> {
