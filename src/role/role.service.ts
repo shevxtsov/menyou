@@ -15,7 +15,7 @@ export class RoleService {
         private readonly _roleRepository: Repository<RoleEntity>
     ) {}
 
-    async findAll(query: any): Promise<IRoleListResponse> {
+    public async findAll(query: any): Promise<IRoleListResponse> {
         const queryBuilder = this._roleRepository.createQueryBuilder('roles')
         const rolesCount = await queryBuilder.getCount()
 
@@ -35,7 +35,7 @@ export class RoleService {
         }
     }
 
-    async createRole(createRoleDto: CreateRoleDto): Promise<RoleEntity> {
+    public async createRole(createRoleDto: CreateRoleDto): Promise<RoleEntity> {
         const existedRole = await this._roleRepository.findOne({
             where: {
                 code: createRoleDto.code
@@ -55,7 +55,7 @@ export class RoleService {
         return this._roleRepository.save(role)
     }
 
-    async updateRole(
+    public async updateRole(
         roleId: number,
         updateRoleDto: UpdateRoleDto
     ): Promise<RoleEntity> {
@@ -70,7 +70,7 @@ export class RoleService {
         return await this._roleRepository.save(role)
     }
 
-    async deleteRole(roleId: number): Promise<DeleteResult> {
+    public async deleteRole(roleId: number): Promise<DeleteResult> {
         const role = await this.findById(roleId)
 
         if (!role) {
@@ -88,7 +88,7 @@ export class RoleService {
         })
     }
 
-    buildRoleResponse(role: RoleEntity): IRoleResponse {
+    public buildRoleResponse(role: RoleEntity): IRoleResponse {
         return {
             role
         }

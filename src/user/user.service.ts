@@ -22,7 +22,7 @@ export class UserService {
         private readonly _roleRepository: Repository<RoleEntity>
     ) {}
 
-    async createUser(createUserDto: CreateUserDto): Promise<UserEntity> {
+    public async createUser(createUserDto: CreateUserDto): Promise<UserEntity> {
         const userByUsername = await this._userRepository.findOne({
             where: {
                 username: createUserDto.username
@@ -48,7 +48,7 @@ export class UserService {
         return await this._userRepository.save(newUser)
     }
 
-    async updateUser(
+    public async updateUser(
         userId: number,
         updateUserDto: UpdateUserDto
     ): Promise<UserEntity> {
@@ -75,7 +75,7 @@ export class UserService {
         return this._userRepository.save(user)
     }
 
-    async getRolesbyIds(roles: number[]): Promise<RoleEntity[]> {
+    public async getRolesbyIds(roles: number[]): Promise<RoleEntity[]> {
         const returnedRoles = await this._roleRepository.find({
             where: { id: In(roles) }
         })
@@ -90,7 +90,7 @@ export class UserService {
         return returnedRoles
     }
 
-    async login(loginUserDto: LoginUserDto): Promise<UserEntity> {
+    public async login(loginUserDto: LoginUserDto): Promise<UserEntity> {
         const user = await this._userRepository
             .createQueryBuilder('users')
             .leftJoinAndSelect('users.role_list', 'roles')
@@ -124,7 +124,7 @@ export class UserService {
         return user
     }
 
-    async findAll(query: any): Promise<IUserListResponse> {
+    public async findAll(query: any): Promise<IUserListResponse> {
         const queryBuilder = this._userRepository
             .createQueryBuilder('users')
             .leftJoinAndSelect('users.role_list', 'roles')
@@ -146,7 +146,7 @@ export class UserService {
         }
     }
 
-    findUserById(userId: number): Promise<UserEntity> {
+    public findUserById(userId: number): Promise<UserEntity> {
         return this._userRepository.findOne({
             where: {
                 id: userId
@@ -166,7 +166,7 @@ export class UserService {
         )
     }
 
-    buildUserResponse(user: UserEntity): IUserResponse {
+    public buildUserResponse(user: UserEntity): IUserResponse {
         delete user.password
 
         return {
