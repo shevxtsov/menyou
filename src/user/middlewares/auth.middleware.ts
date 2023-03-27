@@ -33,7 +33,9 @@ export class AuthMiddleware implements NestMiddleware {
 
         try {
             const decode: any = verify(token, JWT_SECRET)
-            const user = await this._userService.findUserById(decode.id)
+            const user = await this._userService.findUserByIdWithRoles(
+                decode.id
+            )
 
             req.user = user
             next()

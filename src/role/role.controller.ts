@@ -7,6 +7,7 @@ import {
     Post,
     Put,
     Query,
+    UseGuards,
     UsePipes,
     ValidationPipe
 } from '@nestjs/common'
@@ -18,8 +19,10 @@ import { UpdateRoleDto } from './dto/updateRole.dto'
 import { RoleService } from './role.service'
 import { IRoleListResponse } from './types/roleListResponse.interface'
 import { IRoleResponse } from './types/roleResponse.interface'
+import { AdminGuard } from 'src/shared/guards/admin.guard'
 
 @Controller('role')
+@UseGuards(AdminGuard)
 export class RoleController {
     constructor(private readonly _roleService: RoleService) {}
 

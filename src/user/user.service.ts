@@ -155,6 +155,16 @@ export class UserService {
         }
     }
 
+    public async findUserByIdWithRoles(userId: number): Promise<UserEntity> {
+        return await this._userRepository
+            .createQueryBuilder('users')
+            .leftJoinAndSelect('users.role_list', 'roles')
+            .where('users.id = :id', {
+                id: userId
+            })
+            .getOne()
+    }
+
     public findUserById(userId: number): Promise<UserEntity> {
         return this._userRepository.findOne({
             where: {

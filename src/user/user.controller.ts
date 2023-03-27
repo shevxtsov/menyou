@@ -7,10 +7,12 @@ import {
     Post,
     Put,
     Query,
+    UseGuards,
     UsePipes,
     ValidationPipe
 } from '@nestjs/common'
 
+import { AdminGuard } from 'src/shared/guards/admin.guard'
 import { TransformUpdateBodyPipe } from 'src/shared/pipes/transformUpdateBody.pipe'
 import { DeleteResult } from 'typeorm'
 import { User } from './decorators/user.decorator'
@@ -27,6 +29,7 @@ export class UserController {
     constructor(private readonly _userService: UserService) {}
 
     @Post()
+    @UseGuards(AdminGuard)
     @UsePipes(new ValidationPipe())
     async createUser(
         @Body('user') createUserDto: CreateUserDto
@@ -37,6 +40,7 @@ export class UserController {
     }
 
     @Put(':id')
+    @UseGuards(AdminGuard)
     @UsePipes(new ValidationPipe(), new TransformUpdateBodyPipe())
     async updateUser(
         @Param('id') userId: number,
@@ -48,6 +52,7 @@ export class UserController {
     }
 
     @Delete(':id')
+    @UseGuards(AdminGuard)
     async deleteUser(@Param('id') userId: number): Promise<DeleteResult> {
         return this._userService.deleteUser(userId)
     }
@@ -68,6 +73,7 @@ export class UserController {
     }
 
     @Get('list')
+    @UseGuards(AdminGuard)
     async getUserList(@Query() query: any): Promise<IUserListResponse> {
         return await this._userService.findAll(query)
     }
