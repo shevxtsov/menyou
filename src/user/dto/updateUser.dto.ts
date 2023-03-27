@@ -1,6 +1,13 @@
 import { ArrayMinSize, IsArray, IsNotEmpty } from 'class-validator'
 
 export class UpdateUserDto {
+    public allowedProperties = [
+        'username',
+        'firstname',
+        'lastname',
+        'role_list'
+    ]
+
     @IsNotEmpty()
     readonly username: string
 

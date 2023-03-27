@@ -1,6 +1,7 @@
 import {
     Body,
     Controller,
+    Delete,
     Get,
     Param,
     Post,
@@ -10,6 +11,8 @@ import {
     ValidationPipe
 } from '@nestjs/common'
 
+import { TransformUpdateBodyPipe } from 'src/shared/pipes/transformUpdateBody.pipe'
+import { DeleteResult } from 'typeorm'
 import { User } from './decorators/user.decorator'
 import { CreateUserDto } from './dto/createUser.dto'
 import { LoginUserDto } from './dto/loginUser.dto'
@@ -34,7 +37,7 @@ export class UserController {
     }
 
     @Put(':id')
-    @UsePipes(new ValidationPipe())
+    @UsePipes(new ValidationPipe(), new TransformUpdateBodyPipe())
     async updateUser(
         @Param('id') userId: number,
         @Body('user') updateUserDto: UpdateUserDto
@@ -42,6 +45,11 @@ export class UserController {
         const user = await this._userService.updateUser(userId, updateUserDto)
 
         return this._userService.buildUserResponse(user)
+    }
+
+    @Delete(':id')
+    async deleteUser(@Param('id') userId: number): Promise<DeleteResult> {
+        return this._userService.deleteUser(userId)
     }
 
     @Post('login')

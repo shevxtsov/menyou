@@ -1,6 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
-import { In, Repository } from 'typeorm'
+import { DeleteResult, In, Repository } from 'typeorm'
 import { sign } from 'jsonwebtoken'
 import { compare } from 'bcrypt'
 
@@ -52,7 +52,6 @@ export class UserService {
         userId: number,
         updateUserDto: UpdateUserDto
     ): Promise<UserEntity> {
-        const { username, firstname, lastname, role_list } = updateUserDto
         const user = await this._userRepository
             .createQueryBuilder('users')
             .leftJoinAndSelect('users.role_list', 'roles')
@@ -65,14 +64,24 @@ export class UserService {
             throw new HttpException('user doesnt exist', HttpStatus.NOT_FOUND)
         }
 
-        const roles: RoleEntity[] = await this.getRolesbyIds(role_list)
+        const roles: RoleEntity[] = await this.getRolesbyIds(
+            updateUserDto.role_list
+        )
 
-        user.username = username
-        user.firstname = firstname
-        user.lastname = lastname
+        Object.assign(user, updateUserDto)
         user.role_list = roles
 
         return this._userRepository.save(user)
+    }
+
+    async deleteUser(userId: number): Promise<DeleteResult> {
+        const user = await this.findUserById(userId)
+
+        if (!user) {
+            throw new HttpException('user doesnt exist', HttpStatus.NOT_FOUND)
+        }
+
+        return this._userRepository.delete(userId)
     }
 
     public async getRolesbyIds(roles: number[]): Promise<RoleEntity[]> {

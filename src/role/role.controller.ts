@@ -12,6 +12,7 @@ import {
 } from '@nestjs/common'
 import { DeleteResult } from 'typeorm'
 
+import { TransformUpdateBodyPipe } from 'src/shared/pipes/transformUpdateBody.pipe'
 import { CreateRoleDto } from './dto/createRole.dto'
 import { UpdateRoleDto } from './dto/updateRole.dto'
 import { RoleService } from './role.service'
@@ -36,7 +37,7 @@ export class RoleController {
     }
 
     @Put(':id')
-    @UsePipes(new ValidationPipe())
+    @UsePipes(new ValidationPipe(), new TransformUpdateBodyPipe())
     async updateRole(
         @Param('id') roleId: number,
         @Body('role') updateRoleDto: UpdateRoleDto
