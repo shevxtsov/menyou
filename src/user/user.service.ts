@@ -39,7 +39,7 @@ export class UserService {
         const newUser = new UserEntity()
         Object.assign(newUser, createUserDto)
 
-        const roles: RoleEntity[] = await this.getRolebyIds(
+        const roles: RoleEntity[] = await this.getRolesbyIds(
             createUserDto.role_list
         )
 
@@ -52,10 +52,10 @@ export class UserService {
         userId: number,
         updateUserDto: UpdateUserDto
     ): Promise<UserEntity> {
+        const { username, firstname, lastname, role_list } = updateUserDto
         const user = await this._userRepository
             .createQueryBuilder('users')
             .leftJoinAndSelect('users.role_list', 'roles')
-            .addSelect('users.password')
             .where('users.id = :id', {
                 id: userId
             })
@@ -65,20 +65,17 @@ export class UserService {
             throw new HttpException('user doesnt exist', HttpStatus.NOT_FOUND)
         }
 
-        Object.assign(user, updateUserDto)
+        const roles: RoleEntity[] = await this.getRolesbyIds(role_list)
 
-        if (updateUserDto.role_list) {
-            const roles: RoleEntity[] = await this.getRolebyIds(
-                updateUserDto.role_list
-            )
-
-            user.role_list = roles
-        }
+        user.username = username
+        user.firstname = firstname
+        user.lastname = lastname
+        user.role_list = roles
 
         return this._userRepository.save(user)
     }
 
-    async getRolebyIds(roles: number[]): Promise<RoleEntity[]> {
+    async getRolesbyIds(roles: number[]): Promise<RoleEntity[]> {
         const returnedRoles = await this._roleRepository.find({
             where: { id: In(roles) }
         })
@@ -170,6 +167,8 @@ export class UserService {
     }
 
     buildUserResponse(user: UserEntity): IUserResponse {
+        delete user.password
+
         return {
             user: {
                 ...user,
