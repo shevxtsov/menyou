@@ -13,7 +13,7 @@ import {
 } from '@nestjs/common'
 
 import { AdminGuard } from 'src/shared/guards/admin.guard'
-import { TransformUpdateBodyPipe } from 'src/shared/pipes/transformUpdateBody.pipe'
+import { TransformBodyForDtoPipe } from 'src/shared/pipes/transformBodyForDto.pipe'
 import { DeleteResult } from 'typeorm'
 import { User } from './decorators/user.decorator'
 import { CreateUserDto } from './dto/createUser.dto'
@@ -30,7 +30,7 @@ export class UserController {
 
     @Post()
     @UseGuards(AdminGuard)
-    @UsePipes(new ValidationPipe())
+    @UsePipes(new ValidationPipe(), new TransformBodyForDtoPipe())
     async createUser(
         @Body('user') createUserDto: CreateUserDto
     ): Promise<IUserResponse> {
@@ -41,7 +41,7 @@ export class UserController {
 
     @Put(':id')
     @UseGuards(AdminGuard)
-    @UsePipes(new ValidationPipe(), new TransformUpdateBodyPipe())
+    @UsePipes(new ValidationPipe(), new TransformBodyForDtoPipe())
     async updateUser(
         @Param('id') userId: number,
         @Body('user') updateUserDto: UpdateUserDto

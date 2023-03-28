@@ -1,6 +1,16 @@
 import { ArrayMinSize, IsArray, IsNotEmpty } from 'class-validator'
 
-export class CreateUserDto {
+import { ITransformEntityDto } from 'src/shared/types/transformEntityDto.interface'
+
+export class CreateUserDto implements ITransformEntityDto {
+    public readonly allowedProperties: string[] = [
+        'username',
+        'password',
+        'firstname',
+        'lastname',
+        'role_list'
+    ]
+
     @IsNotEmpty()
     readonly username: string
 

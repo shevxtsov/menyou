@@ -2,7 +2,7 @@ import { ArgumentMetadata, Injectable, PipeTransform } from '@nestjs/common'
 import { plainToInstance } from 'class-transformer'
 
 @Injectable()
-export class TransformUpdateBodyPipe implements PipeTransform<any> {
+export class TransformBodyForDtoPipe implements PipeTransform<any> {
     async transform(value: any, metadata: ArgumentMetadata): Promise<any> {
         const { metatype } = metadata
         const object = plainToInstance(metatype, value)

@@ -13,7 +13,7 @@ import {
 } from '@nestjs/common'
 import { DeleteResult } from 'typeorm'
 
-import { TransformUpdateBodyPipe } from 'src/shared/pipes/transformUpdateBody.pipe'
+import { TransformBodyForDtoPipe } from 'src/shared/pipes/transformBodyForDto.pipe'
 import { CreateRoleDto } from './dto/createRole.dto'
 import { UpdateRoleDto } from './dto/updateRole.dto'
 import { RoleService } from './role.service'
@@ -27,7 +27,7 @@ export class RoleController {
     constructor(private readonly _roleService: RoleService) {}
 
     @Post()
-    @UsePipes(new ValidationPipe())
+    @UsePipes(new ValidationPipe(), new TransformBodyForDtoPipe())
     async createRole(@Body('role') createRoleDto: CreateRoleDto): Promise<any> {
         const role = await this._roleService.createRole(createRoleDto)
 
@@ -40,7 +40,7 @@ export class RoleController {
     }
 
     @Put(':id')
-    @UsePipes(new ValidationPipe(), new TransformUpdateBodyPipe())
+    @UsePipes(new ValidationPipe(), new TransformBodyForDtoPipe())
     async updateRole(
         @Param('id') roleId: number,
         @Body('role') updateRoleDto: UpdateRoleDto

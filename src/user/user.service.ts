@@ -74,7 +74,7 @@ export class UserService {
         return this._userRepository.save(user)
     }
 
-    async deleteUser(userId: number): Promise<DeleteResult> {
+    public async deleteUser(userId: number): Promise<DeleteResult> {
         const user = await this.findUserById(userId)
 
         if (!user) {
@@ -127,8 +127,6 @@ export class UserService {
                 HttpStatus.BAD_REQUEST
             )
         }
-
-        delete user.password
 
         return user
     }

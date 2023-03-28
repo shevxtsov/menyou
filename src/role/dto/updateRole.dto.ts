@@ -1,7 +1,9 @@
 import { IsNotEmpty } from 'class-validator'
 
-export class UpdateRoleDto {
-    public allowedProperties = ['code', 'name']
+import { ITransformEntityDto } from 'src/shared/types/transformEntityDto.interface'
+
+export class UpdateRoleDto implements ITransformEntityDto {
+    public readonly allowedProperties: string[] = ['code', 'name']
 
     @IsNotEmpty()
     readonly code: string

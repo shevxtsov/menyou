@@ -1,7 +1,9 @@
 import { ArrayMinSize, IsArray, IsNotEmpty } from 'class-validator'
 
-export class UpdateUserDto {
-    public allowedProperties = [
+import { ITransformEntityDto } from 'src/shared/types/transformEntityDto.interface'
+
+export class UpdateUserDto implements ITransformEntityDto {
+    public readonly allowedProperties: string[] = [
         'username',
         'firstname',
         'lastname',
