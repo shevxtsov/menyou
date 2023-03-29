@@ -14,6 +14,10 @@ export class MasterGuard implements CanActivate {
         const request = context.switchToHttp().getRequest<IExpressRequest>()
 
         if (request.user) {
+            if (request.user.is_admin) {
+                return true
+            }
+
             const roles: string[] = request.user.role_list.map(
                 (role) => role.code
             )
