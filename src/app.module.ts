@@ -3,6 +3,7 @@ import { TypeOrmModule } from '@nestjs/typeorm'
 
 import { AppController } from './app.controller'
 import { AppService } from './app.service'
+import { MealModule } from './meal/meal.module'
 import ormconfig from './ormconfig'
 import { ProductModule } from './product/product.module'
 import { RoleModule } from './role/role.module'
@@ -14,7 +15,8 @@ import { UserModule } from './user/user.module'
         TypeOrmModule.forRoot(ormconfig),
         UserModule,
         RoleModule,
-        ProductModule
+        ProductModule,
+        MealModule
     ],
     controllers: [AppController],
     providers: [AppService]
