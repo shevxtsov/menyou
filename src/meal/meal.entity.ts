@@ -1,4 +1,12 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm'
+import {
+    Column,
+    Entity,
+    JoinTable,
+    ManyToMany,
+    PrimaryGeneratedColumn
+} from 'typeorm'
+
+import { ProductEntity } from 'src/product/product.entity'
 
 @Entity({ name: 'meals' })
 export class MealEntity {
@@ -16,4 +24,8 @@ export class MealEntity {
 
     @Column({ default: false })
     is_blocked: boolean
+
+    @ManyToMany(() => ProductEntity)
+    @JoinTable()
+    product_list: ProductEntity[]
 }

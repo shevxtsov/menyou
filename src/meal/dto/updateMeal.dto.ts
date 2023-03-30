@@ -7,7 +7,8 @@ export class UpdateMealDto implements ITransformEntityDto {
         'name',
         'description',
         'image',
-        'is_blocked'
+        'is_blocked',
+        'product_list'
     ]
 
     @IsNotEmpty()
@@ -18,4 +19,6 @@ export class UpdateMealDto implements ITransformEntityDto {
     readonly image: string
 
     readonly is_blocked: boolean
+
+    readonly product_list: number[]
 }

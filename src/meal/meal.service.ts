@@ -1,7 +1,8 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
-import { DeleteResult, Repository } from 'typeorm'
+import { DeleteResult, In, Repository } from 'typeorm'
 
+import { ProductEntity } from 'src/product/product.entity'
 import { CreateMealDto } from './dto/createMeal.dto'
 import { UpdateMealDto } from './dto/updateMeal.dto'
 import { MealEntity } from './meal.entity'
@@ -12,13 +13,18 @@ import { IMealResponse } from './types/mealResponse.interface'
 export class MealService {
     constructor(
         @InjectRepository(MealEntity)
-        private readonly _mealRepository: Repository<MealEntity>
+        private readonly _mealRepository: Repository<MealEntity>,
+        @InjectRepository(ProductEntity)
+        private readonly _productRepository: Repository<ProductEntity>
     ) {}
 
     public async createMeal(createMealDto: CreateMealDto): Promise<MealEntity> {
         const meal = new MealEntity()
 
         Object.assign(meal, createMealDto)
+
+        const products = await this.getProductsByIds(createMealDto.product_list)
+        meal.product_list = products
 
         return await this._mealRepository.save(meal)
     }
@@ -35,6 +41,9 @@ export class MealService {
 
         Object.assign(meal, updateMealDto)
 
+        const products = await this.getProductsByIds(updateMealDto.product_list)
+        meal.product_list = products
+
         return await this._mealRepository.save(meal)
     }
 
@@ -49,7 +58,9 @@ export class MealService {
     }
 
     public async findAll(query: any): Promise<IMealListResponse> {
-        const queryBuilder = this._mealRepository.createQueryBuilder('meals')
+        const queryBuilder = this._mealRepository
+            .createQueryBuilder('meals')
+            .leftJoinAndSelect('meals.product_list', 'products')
         const mealsTotal = await queryBuilder.getCount()
 
         if (query.limit) {
@@ -66,6 +77,25 @@ export class MealService {
             meals: meals,
             total: mealsTotal
         }
+    }
+
+    public async getProductsByIds(
+        products: number[]
+    ): Promise<ProductEntity[]> {
+        const returnedProducts = await this._productRepository.find({
+            where: {
+                id: In(products)
+            }
+        })
+
+        if (returnedProducts.length !== products.length) {
+            throw new HttpException(
+                'Some of the products you supplied were not found',
+                HttpStatus.NOT_FOUND
+            )
+        }
+
+        return returnedProducts
     }
 
     public async findMealById(mealId: number): Promise<MealEntity> {

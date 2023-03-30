@@ -86,7 +86,9 @@ export class UserService {
 
     public async getRolesbyIds(roles: number[]): Promise<RoleEntity[]> {
         const returnedRoles = await this._roleRepository.find({
-            where: { id: In(roles) }
+            where: {
+                id: In(roles)
+            }
         })
 
         if (returnedRoles.length !== roles.length) {

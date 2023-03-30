@@ -6,7 +6,8 @@ export class CreateMealDto implements ITransformEntityDto {
     public readonly allowedProperties: string[] = [
         'name',
         'description',
-        'image'
+        'image',
+        'product_list'
     ]
 
     @IsNotEmpty()
@@ -15,4 +16,6 @@ export class CreateMealDto implements ITransformEntityDto {
     readonly description: string
 
     readonly image: string
+
+    readonly product_list: number[]
 }
