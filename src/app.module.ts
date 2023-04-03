@@ -10,6 +10,7 @@ import { RoleModule } from './role/role.module'
 import { AuthMiddleware } from './user/middlewares/auth.middleware'
 import { UserModule } from './user/user.module'
 import { FilterModule } from './filter/filter.module'
+import { OrderModule } from './order/order.module'
 
 @Module({
     imports: [
@@ -18,7 +19,8 @@ import { FilterModule } from './filter/filter.module'
         RoleModule,
         ProductModule,
         MealModule,
-        FilterModule
+        FilterModule,
+        OrderModule
     ],
     controllers: [AppController],
     providers: [AppService]

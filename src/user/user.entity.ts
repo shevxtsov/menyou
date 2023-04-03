@@ -4,11 +4,13 @@ import {
     Entity,
     JoinTable,
     ManyToMany,
+    OneToMany,
     PrimaryGeneratedColumn
 } from 'typeorm'
 import { hash } from 'bcrypt'
 
 import { RoleEntity } from 'src/role/role.entity'
+import { OrderEntity } from 'src/order/order.entity'
 
 @Entity({ name: 'users' })
 export class UserEntity {
@@ -44,4 +46,7 @@ export class UserEntity {
     @ManyToMany(() => RoleEntity)
     @JoinTable()
     role_list: RoleEntity[]
+
+    @OneToMany(() => OrderEntity, (order) => order.author)
+    order_list: OrderEntity[]
 }
