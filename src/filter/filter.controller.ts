@@ -2,8 +2,10 @@ import {
     Body,
     Controller,
     Delete,
+    Get,
     Param,
     Post,
+    Put,
     UseGuards,
     UsePipes,
     ValidationPipe
@@ -15,6 +17,8 @@ import { FilterService } from './filter.service'
 import { TransformBodyForDtoPipe } from 'src/shared/pipes/transformBodyForDto.pipe'
 import { DeleteResult } from 'typeorm'
 import { MasterGuard } from 'src/shared/guards/master.guard'
+import { UpdateFilterDto } from './dto/updateFilter.dto'
+import { IFilterListResponse } from './types/filterListResponse.interface'
 
 @Controller('filter')
 @UseGuards(MasterGuard)
@@ -31,8 +35,27 @@ export class FilterController {
         return this._filterService.buildFilterResponse(filter)
     }
 
+    @Put(':id')
+    @UsePipes(new ValidationPipe(), new TransformBodyForDtoPipe())
+    async updateFilter(
+        @Param('id') filterId: number,
+        @Body('filter') updateFilterDto: UpdateFilterDto
+    ): Promise<IFilterResponse> {
+        const filter = await this._filterService.updateFilter(
+            filterId,
+            updateFilterDto
+        )
+
+        return this._filterService.buildFilterResponse(filter)
+    }
+
     @Delete(':id')
     async deleteFilter(@Param('id') filterId: number): Promise<DeleteResult> {
         return await this._filterService.deleteFilter(filterId)
+    }
+
+    @Get('list')
+    async findAll(): Promise<IFilterListResponse> {
+        return await this._filterService.findAll()
     }
 }
