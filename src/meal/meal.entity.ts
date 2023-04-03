@@ -7,6 +7,7 @@ import {
 } from 'typeorm'
 
 import { ProductEntity } from 'src/product/product.entity'
+import { FilterEntity } from 'src/filter/filter.entity'
 
 @Entity({ name: 'meals' })
 export class MealEntity {
@@ -28,4 +29,8 @@ export class MealEntity {
     @ManyToMany(() => ProductEntity)
     @JoinTable()
     product_list: ProductEntity[]
+
+    @ManyToMany(() => FilterEntity)
+    @JoinTable()
+    filter_list: FilterEntity[]
 }

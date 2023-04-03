@@ -8,6 +8,7 @@ import { UpdateMealDto } from './dto/updateMeal.dto'
 import { MealEntity } from './meal.entity'
 import { IMealListResponse } from './types/mealListResponse.interface'
 import { IMealResponse } from './types/mealResponse.interface'
+import { FilterEntity } from 'src/filter/filter.entity'
 
 @Injectable()
 export class MealService {
@@ -15,7 +16,9 @@ export class MealService {
         @InjectRepository(MealEntity)
         private readonly _mealRepository: Repository<MealEntity>,
         @InjectRepository(ProductEntity)
-        private readonly _productRepository: Repository<ProductEntity>
+        private readonly _productRepository: Repository<ProductEntity>,
+        @InjectRepository(FilterEntity)
+        private readonly _filterRepository: Repository<FilterEntity>
     ) {}
 
     public async createMeal(createMealDto: CreateMealDto): Promise<MealEntity> {
@@ -25,6 +28,9 @@ export class MealService {
 
         const products = await this.getProductsByIds(createMealDto.product_list)
         meal.product_list = products
+
+        const filters = await this.getFiltersByIds(createMealDto.filter_list)
+        meal.filter_list = filters
 
         return await this._mealRepository.save(meal)
     }
@@ -44,6 +50,9 @@ export class MealService {
         const products = await this.getProductsByIds(updateMealDto.product_list)
         meal.product_list = products
 
+        const filters = await this.getFiltersByIds(updateMealDto.filter_list)
+        meal.filter_list = filters
+
         return await this._mealRepository.save(meal)
     }
 
@@ -61,6 +70,7 @@ export class MealService {
         const queryBuilder = this._mealRepository
             .createQueryBuilder('meals')
             .leftJoinAndSelect('meals.product_list', 'products')
+            .leftJoinAndSelect('meals.filter_list', 'filters')
         const mealsTotal = await queryBuilder.getCount()
 
         if (query.limit) {
@@ -96,6 +106,23 @@ export class MealService {
         }
 
         return returnedProducts
+    }
+
+    public async getFiltersByIds(filters: number[]): Promise<FilterEntity[]> {
+        const returnedFilters = await this._filterRepository.find({
+            where: {
+                id: In(filters)
+            }
+        })
+
+        if (returnedFilters.length !== filters.length) {
+            throw new HttpException(
+                'Some of the filters you supplied were not found',
+                HttpStatus.NOT_FOUND
+            )
+        }
+
+        return returnedFilters
     }
 
     public async findMealById(mealId: number): Promise<MealEntity> {

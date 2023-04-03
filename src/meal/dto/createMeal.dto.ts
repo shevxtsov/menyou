@@ -7,7 +7,8 @@ export class CreateMealDto implements ITransformEntityDto {
         'name',
         'description',
         'image',
-        'product_list'
+        'product_list',
+        'filter_list'
     ]
 
     @IsNotEmpty()
@@ -18,4 +19,6 @@ export class CreateMealDto implements ITransformEntityDto {
     readonly image: string
 
     readonly product_list: number[]
+
+    readonly filter_list: number[]
 }
