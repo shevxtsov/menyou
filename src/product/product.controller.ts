@@ -20,6 +20,7 @@ import { UpdateProductDto } from './dto/updateProduct.dto'
 import { ProductService } from './product.service'
 import { IProductListResponse } from './types/productListResponse.interface'
 import { IProductResponse } from './types/productResponse.interface'
+import { IQueryForList } from 'src/shared/types/queryForList.interface'
 
 @Controller('product')
 @UseGuards(MasterGuard)
@@ -58,7 +59,9 @@ export class ProductController {
     }
 
     @Get('list')
-    async findAll(@Query() query: any): Promise<IProductListResponse> {
+    async findAll(
+        @Query() query: IQueryForList
+    ): Promise<IProductListResponse> {
         return await this._productService.findAll(query)
     }
 }

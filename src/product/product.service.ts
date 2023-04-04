@@ -7,6 +7,7 @@ import { UpdateProductDto } from './dto/updateProduct.dto'
 import { ProductEntity } from './product.entity'
 import { IProductListResponse } from './types/productListResponse.interface'
 import { IProductResponse } from './types/productResponse.interface'
+import { IQueryForList } from 'src/shared/types/queryForList.interface'
 
 @Injectable()
 export class ProductService {
@@ -56,7 +57,7 @@ export class ProductService {
         return await this._productRepository.delete(productId)
     }
 
-    public async findAll(query: any): Promise<IProductListResponse> {
+    public async findAll(query: IQueryForList): Promise<IProductListResponse> {
         const queryBuilder =
             this._productRepository.createQueryBuilder('products')
         const productsCount = await queryBuilder.getCount()

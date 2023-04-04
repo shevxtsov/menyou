@@ -12,6 +12,7 @@ import { LoginUserDto } from './dto/loginUser.dto'
 import { IUserListResponse } from './types/userListResponse.interface'
 import { RoleEntity } from 'src/role/role.entity'
 import { UpdateUserDto } from './dto/updateUser.dto'
+import { IQueryForList } from 'src/shared/types/queryForList.interface'
 
 @Injectable()
 export class UserService {
@@ -133,7 +134,7 @@ export class UserService {
         return user
     }
 
-    public async findAll(query: any): Promise<IUserListResponse> {
+    public async findAll(query: IQueryForList): Promise<IUserListResponse> {
         const queryBuilder = this._userRepository
             .createQueryBuilder('users')
             .leftJoinAndSelect('users.role_list', 'roles')

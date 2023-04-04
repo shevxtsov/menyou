@@ -23,6 +23,7 @@ import { IUserListResponse } from './types/userListResponse.interface'
 import { IUserResponse } from './types/userResponse.interface'
 import { UserEntity } from './user.entity'
 import { UserService } from './user.service'
+import { IQueryForList } from 'src/shared/types/queryForList.interface'
 
 @Controller('user')
 export class UserController {
@@ -74,7 +75,9 @@ export class UserController {
 
     @Get('list')
     @UseGuards(AdminGuard)
-    async getUserList(@Query() query: any): Promise<IUserListResponse> {
+    async getUserList(
+        @Query() query: IQueryForList
+    ): Promise<IUserListResponse> {
         return await this._userService.findAll(query)
     }
 }

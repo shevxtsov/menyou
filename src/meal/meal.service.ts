@@ -9,6 +9,7 @@ import { MealEntity } from './meal.entity'
 import { IMealListResponse } from './types/mealListResponse.interface'
 import { IMealResponse } from './types/mealResponse.interface'
 import { FilterEntity } from 'src/filter/filter.entity'
+import { IQueryForList } from 'src/shared/types/queryForList.interface'
 
 @Injectable()
 export class MealService {
@@ -66,7 +67,7 @@ export class MealService {
         return await this._mealRepository.delete(mealId)
     }
 
-    public async findAll(query: any): Promise<IMealListResponse> {
+    public async findAll(query: IQueryForList): Promise<IMealListResponse> {
         const queryBuilder = this._mealRepository
             .createQueryBuilder('meals')
             .leftJoinAndSelect('meals.product_list', 'products')

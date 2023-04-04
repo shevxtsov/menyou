@@ -20,6 +20,7 @@ import { RoleService } from './role.service'
 import { IRoleListResponse } from './types/roleListResponse.interface'
 import { IRoleResponse } from './types/roleResponse.interface'
 import { AdminGuard } from 'src/shared/guards/admin.guard'
+import { IQueryForList } from 'src/shared/types/queryForList.interface'
 
 @Controller('role')
 @UseGuards(AdminGuard)
@@ -35,7 +36,9 @@ export class RoleController {
     }
 
     @Get('list')
-    async getRoleList(@Query() query: any): Promise<IRoleListResponse> {
+    async getRoleList(
+        @Query() query: IQueryForList
+    ): Promise<IRoleListResponse> {
         return await this._roleService.findAll(query)
     }
 

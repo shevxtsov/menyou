@@ -7,6 +7,7 @@ import { UpdateRoleDto } from './dto/updateRole.dto'
 import { RoleEntity } from './role.entity'
 import { IRoleListResponse } from './types/roleListResponse.interface'
 import { IRoleResponse } from './types/roleResponse.interface'
+import { IQueryForList } from 'src/shared/types/queryForList.interface'
 
 @Injectable()
 export class RoleService {
@@ -15,7 +16,7 @@ export class RoleService {
         private readonly _roleRepository: Repository<RoleEntity>
     ) {}
 
-    public async findAll(query: any): Promise<IRoleListResponse> {
+    public async findAll(query: IQueryForList): Promise<IRoleListResponse> {
         const queryBuilder = this._roleRepository.createQueryBuilder('roles')
         const rolesCount = await queryBuilder.getCount()
 

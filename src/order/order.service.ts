@@ -1,12 +1,14 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
+import { DeleteResult, In, Repository } from 'typeorm'
 
 import { UserEntity } from 'src/user/user.entity'
 import { CreateOrderDto } from './dto/createOrder.dto'
 import { OrderEntity } from './order.entity'
-import { In, Repository } from 'typeorm'
 import { MealEntity } from 'src/meal/meal.entity'
 import { IOrderResponse } from './types/orderResponse.interface'
+import { IOrderListResponse } from './types/orderListResponse.interface'
+import { IQueryForList } from 'src/shared/types/queryForList.interface'
 
 @Injectable()
 export class OrderService {
@@ -44,6 +46,38 @@ export class OrderService {
         return await this._orderRepository.save(newOrder)
     }
 
+    public async deleteOrder(orderId: number): Promise<DeleteResult> {
+        const order = await this.findOrderById(orderId)
+
+        if (!order) {
+            throw new HttpException('order doesnt exist', HttpStatus.NOT_FOUND)
+        }
+
+        return await this._orderRepository.delete(orderId)
+    }
+
+    public async findAll(query: IQueryForList): Promise<IOrderListResponse> {
+        const queryBuilder = this._orderRepository
+            .createQueryBuilder('orders')
+            .leftJoinAndSelect('orders.author', 'users')
+        const ordersCount = await queryBuilder.getCount()
+
+        if (query.limit) {
+            queryBuilder.limit(query.limit)
+        }
+
+        if (query.offset) {
+            queryBuilder.offset(query.offset)
+        }
+
+        const orders = await queryBuilder.getMany()
+
+        return {
+            orders: orders,
+            total: ordersCount
+        }
+    }
+
     public async getMealsByIds(meals: number[]): Promise<MealEntity[]> {
         const returnedMeals = await this._mealRepository.find({
             where: {
@@ -59,6 +93,14 @@ export class OrderService {
         }
 
         return returnedMeals
+    }
+
+    public async findOrderById(orderId: number): Promise<OrderEntity> {
+        return await this._orderRepository.findOne({
+            where: {
+                id: orderId
+            }
+        })
     }
 
     public buildOrderResponse(order: OrderEntity): IOrderResponse {
