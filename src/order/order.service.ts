@@ -103,6 +103,22 @@ export class OrderService {
         })
     }
 
+    public async findFullOrderById(orderId: number): Promise<OrderEntity> {
+        const order = await this._orderRepository
+            .createQueryBuilder('orders')
+            .leftJoinAndSelect('orders.meal_list', 'meals')
+            .where('orders.id = :id', {
+                id: orderId
+            })
+            .getOne()
+
+        if (!order) {
+            throw new HttpException('order doesnt exist', HttpStatus.NOT_FOUND)
+        }
+
+        return order
+    }
+
     public buildOrderResponse(order: OrderEntity): IOrderResponse {
         return {
             order

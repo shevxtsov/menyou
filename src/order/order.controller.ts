@@ -20,6 +20,8 @@ import { UserEntity } from 'src/user/user.entity'
 import { CreateOrderDto } from './dto/createOrder.dto'
 import { IQueryForList } from 'src/shared/types/queryForList.interface'
 import { IOrderListResponse } from './types/orderListResponse.interface'
+import { IOrderResponse } from './types/orderResponse.interface'
+import { IQueryGetSingle } from '../shared/types/queryGetSingle.interface'
 
 @Controller('order')
 @UseGuards(MasterGuard)
@@ -43,6 +45,13 @@ export class OrderController {
     @Delete(':id')
     async deleteOrder(@Param('id') orderId: number): Promise<DeleteResult> {
         return await this._orderService.deleteOrder(orderId)
+    }
+
+    @Get()
+    async findOne(@Query() query: IQueryGetSingle): Promise<IOrderResponse> {
+        const order = await this._orderService.findFullOrderById(query.id)
+
+        return this._orderService.buildOrderResponse(order)
     }
 
     @Get('list')
