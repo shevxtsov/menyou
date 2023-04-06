@@ -9,6 +9,8 @@ import { MealEntity } from 'src/meal/meal.entity'
 import { IOrderResponse } from './types/orderResponse.interface'
 import { IOrderListResponse } from './types/orderListResponse.interface'
 import { IQueryForList } from 'src/shared/types/queryForList.interface'
+import { TOrderStatus } from './types/orderStatus.type'
+import { OrderStatusService } from './services/orderStatus.service'
 
 @Injectable()
 export class OrderService {
@@ -16,7 +18,8 @@ export class OrderService {
         @InjectRepository(OrderEntity)
         private readonly _orderRepository: Repository<OrderEntity>,
         @InjectRepository(MealEntity)
-        private readonly _mealRepository: Repository<MealEntity>
+        private readonly _mealRepository: Repository<MealEntity>,
+        private readonly _orderStatusService: OrderStatusService
     ) {}
 
     public async createOrder(
@@ -43,7 +46,42 @@ export class OrderService {
         newOrder.author = currentUser
         newOrder.meal_list = meals
 
-        return await this._orderRepository.save(newOrder)
+        const savedOrder = await this._orderRepository.save(newOrder)
+
+        if (savedOrder) {
+            this._orderStatusService.setOrderTimer(savedOrder, () => {
+                this.updateStatus(savedOrder.id, 'DONE')
+            })
+        }
+
+        return savedOrder
+    }
+
+    public async updateStatus(orderId: number, status: TOrderStatus) {
+        const order = await this.findOrderById(orderId)
+
+        if (!order) {
+            throw new HttpException('order doesnt exist', HttpStatus.NOT_FOUND)
+        }
+
+        order.status = status
+
+        switch (status) {
+            case 'DONE':
+                order.is_active = false
+                break
+            default:
+                break
+        }
+
+        const updatedOrder = await this._orderRepository.save(order)
+
+        if (updatedOrder) {
+            this._orderStatusService.clearOrderTime(orderId)
+            this._orderStatusService.onChangeOrderStatus(orderId, status)
+        }
+
+        return updatedOrder
     }
 
     public async deleteOrder(orderId: number): Promise<DeleteResult> {
