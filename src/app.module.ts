@@ -12,9 +12,15 @@ import { UserModule } from './user/user.module'
 import { FilterModule } from './filter/filter.module'
 import { OrderModule } from './order/order.module'
 
+const databaseURL =
+    'postgres://menyou-main-db-0a6f902cce65848ac:YkA9sWZS53eaAE7PD4B6gX9z645FCP@user-prod-us-east-2-1.cluster-cfi5vnucvv3w.us-east-2.rds.amazonaws.com:5432/menyou-main-db-0a6f902cce65848ac'
+
 @Module({
     imports: [
-        TypeOrmModule.forRoot(ormconfig),
+        TypeOrmModule.forRoot({
+            type: 'postgres',
+            url: databaseURL
+        }),
         UserModule,
         RoleModule,
         ProductModule,
