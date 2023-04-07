@@ -27,9 +27,15 @@ import { OrderModule } from './order/order.module'
 })
 export class AppModule {
     configure(consumer: MiddlewareConsumer): void {
-        consumer.apply(AuthMiddleware).forRoutes({
-            path: '*',
-            method: RequestMethod.ALL
-        })
+        consumer
+            .apply(AuthMiddleware)
+            .exclude({
+                path: 'user/login',
+                method: RequestMethod.POST
+            })
+            .forRoutes({
+                path: '*',
+                method: RequestMethod.ALL
+            })
     }
 }

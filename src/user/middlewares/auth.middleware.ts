@@ -16,13 +16,6 @@ export class AuthMiddleware implements NestMiddleware {
     constructor(private readonly _userService: UserService) {}
 
     async use(req: IExpressRequest, res: Response, next: NextFunction) {
-        if (req.url.includes('user/login')) {
-            req.user = null
-            next()
-
-            return
-        }
-
         if (!req.headers.authorization) {
             req.user = null
 
@@ -30,6 +23,10 @@ export class AuthMiddleware implements NestMiddleware {
         }
 
         const token = req.headers.authorization.split(' ')[1]
+
+        if (!token) {
+            throw new HttpException('not authorized', HttpStatus.UNAUTHORIZED)
+        }
 
         try {
             const decode: any = verify(token, JWT_SECRET)
