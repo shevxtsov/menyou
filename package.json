@@ -9,7 +9,7 @@
     "prebuild": "rimraf dist",
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
-    "typeorm": "node -r ./node_modules/typeorm/cli.js -d dist/ormdatasource.js",
+    "typeorm": "node -r ./node_modules/typeorm/cli.js dist/ormdatasource.js",
     "start": "npm run typeorm migration:run node -r ./node_modules/typeorm/cli.js dist/ormseeddatasource.js migration:run node dist/main",
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
