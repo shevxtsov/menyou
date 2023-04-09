@@ -7,7 +7,7 @@ const config: PostgresConnectionOptions = {
     username: process.env.PGUSER,
     password: String(process.env.PGPASSWORD),
     database: process.env.PGDATABASE,
-    entities: [__dirname + '/**/*.entity{.ts, .js}'],
+    entities: [__dirname + '/**/*.entity.js'],
     synchronize: false,
     migrations: [__dirname + '/migrations/**/*{.ts, .js}']
 }
