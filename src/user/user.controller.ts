@@ -30,7 +30,7 @@ export class UserController {
     constructor(private readonly _userService: UserService) {}
 
     @Post()
-    // @UseGuards(AdminGuard)
+    @UseGuards(AdminGuard)
     @UsePipes(new ValidationPipe(), new TransformBodyForDtoPipe())
     async createUser(
         @Body('user') createUserDto: CreateUserDto
@@ -74,7 +74,7 @@ export class UserController {
     }
 
     @Get('list')
-    // @UseGuards(AdminGuard)
+    @UseGuards(AdminGuard)
     async getUserList(
         @Query() query: IQueryForList
     ): Promise<IUserListResponse> {
