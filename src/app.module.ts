@@ -12,12 +12,14 @@ import { UserModule } from './user/user.module'
 import { FilterModule } from './filter/filter.module'
 import { OrderModule } from './order/order.module'
 
+// TypeOrmModule.forRoot({
+//     type: 'postgres',
+//     url: process.env.DATABASE_URL
+// })
+
 @Module({
     imports: [
-        TypeOrmModule.forRoot({
-            type: 'postgres',
-            url: process.env.DATABASE_URL
-        }),
+        TypeOrmModule.forRoot(ormconfig),
         UserModule,
         RoleModule,
         ProductModule,
