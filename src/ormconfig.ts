@@ -8,7 +8,7 @@ const config: PostgresConnectionOptions = {
     password: String(process.env.PGPASSWORD),
     database: process.env.PGDATABASE,
     entities: [__dirname + '/**/*.entity.js'],
-    synchronize: false,
+    synchronize: true,
     migrations: [__dirname + '/migrations/**/*{.ts, .js}']
 }
 
