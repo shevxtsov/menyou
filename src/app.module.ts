@@ -15,7 +15,9 @@ import { OrderModule } from './order/order.module'
     imports: [
         TypeOrmModule.forRoot({
             type: 'postgres',
-            url: process.env.DATABASE_URL
+            url: process.env.DATABASE_URL,
+            entities: [__dirname + '/**/*.entity.js'],
+            synchronize: false
         }),
         UserModule,
         RoleModule,
