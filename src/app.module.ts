@@ -4,7 +4,6 @@ import { TypeOrmModule } from '@nestjs/typeorm'
 import { AppController } from './app.controller'
 import { AppService } from './app.service'
 import { MealModule } from './meal/meal.module'
-import ormconfig from './ormconfig'
 import { ProductModule } from './product/product.module'
 import { RoleModule } from './role/role.module'
 import { AuthMiddleware } from './user/middlewares/auth.middleware'
@@ -12,14 +11,12 @@ import { UserModule } from './user/user.module'
 import { FilterModule } from './filter/filter.module'
 import { OrderModule } from './order/order.module'
 
-// TypeOrmModule.forRoot({
-//     type: 'postgres',
-//     url: process.env.DATABASE_URL
-// })
-
 @Module({
     imports: [
-        TypeOrmModule.forRoot(ormconfig),
+        TypeOrmModule.forRoot({
+            type: 'postgres',
+            url: process.env.DATABASE_URL
+        }),
         UserModule,
         RoleModule,
         ProductModule,
