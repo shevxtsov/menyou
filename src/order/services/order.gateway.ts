@@ -50,6 +50,8 @@ export class OrderSocketGateway
                             orderId: order.id,
                             status: order.status
                         })
+
+                        this._orderStatusService.orderStatus.next(null)
                     }
                 }
             )
