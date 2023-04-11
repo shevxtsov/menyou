@@ -157,13 +157,19 @@ export class UserService {
     }
 
     public async findUserByIdWithRoles(userId: number): Promise<UserEntity> {
-        return await this._userRepository
+        const user = await this._userRepository
             .createQueryBuilder('users')
             .leftJoinAndSelect('users.role_list', 'roles')
             .where('users.id = :id', {
                 id: userId
             })
             .getOne()
+
+        if (!user) {
+            throw new HttpException('not authorized', HttpStatus.UNAUTHORIZED)
+        }
+
+        return user
     }
 
     public findUserById(userId: number): Promise<UserEntity> {
