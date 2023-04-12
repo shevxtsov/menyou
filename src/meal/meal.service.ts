@@ -75,11 +75,11 @@ export class MealService {
         const mealsTotal = await queryBuilder.getCount()
 
         if (query.limit) {
-            queryBuilder.limit(query.limit)
+            queryBuilder.take(query.limit)
         }
 
         if (query.offset) {
-            queryBuilder.offset(query.offset)
+            queryBuilder.skip(query.offset)
         }
 
         const meals = await queryBuilder.getMany()
