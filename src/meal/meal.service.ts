@@ -9,7 +9,7 @@ import { MealEntity } from './meal.entity'
 import { IMealListResponse } from './types/mealListResponse.interface'
 import { IMealResponse } from './types/mealResponse.interface'
 import { FilterEntity } from 'src/filter/filter.entity'
-import { IQueryForList } from 'src/shared/types/queryForList.interface'
+import { IQueryForMealList } from './types/queryForMealList.interface'
 
 @Injectable()
 export class MealService {
@@ -67,12 +67,21 @@ export class MealService {
         return await this._mealRepository.delete(mealId)
     }
 
-    public async findAll(query: IQueryForList): Promise<IMealListResponse> {
+    public async findAll(query: IQueryForMealList): Promise<IMealListResponse> {
         const queryBuilder = this._mealRepository
             .createQueryBuilder('meals')
             .leftJoinAndSelect('meals.product_list', 'products')
             .leftJoinAndSelect('meals.filter_list', 'filters')
-        const mealsTotal = await queryBuilder.getCount()
+
+        if (query.search) {
+            const searchParam = `${query.search
+                .charAt(0)
+                .toUpperCase()}${query.search.slice(1)}`
+
+            queryBuilder.andWhere('meals.name LIKE :name', {
+                name: `%${searchParam}%`
+            })
+        }
 
         if (query.limit) {
             queryBuilder.take(query.limit)
@@ -82,6 +91,7 @@ export class MealService {
             queryBuilder.skip(query.offset)
         }
 
+        const mealsTotal = await queryBuilder.getCount()
         const meals = await queryBuilder.getMany()
 
         return {
