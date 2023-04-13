@@ -73,6 +73,14 @@ export class MealService {
             .leftJoinAndSelect('meals.product_list', 'products')
             .leftJoinAndSelect('meals.filter_list', 'filters')
 
+        if (query.filter) {
+            const queryFilters = query.filter.split(',').map((f) => Number(f))
+
+            queryBuilder.andWhere('filters.id IN (:...filters)', {
+                filters: queryFilters
+            })
+        }
+
         if (query.search) {
             const searchParam = `${query.search
                 .charAt(0)
