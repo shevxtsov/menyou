@@ -20,7 +20,7 @@ import { UpdateMealDto } from './dto/updateMeal.dto'
 import { MealService } from './meal.service'
 import { IMealListResponse } from './types/mealListResponse.interface'
 import { IMealResponse } from './types/mealResponse.interface'
-import { IQueryForList } from 'src/shared/types/queryForList.interface'
+import { IQueryForMealList } from './types/queryForMealList.interface'
 
 @Controller('meal')
 @UseGuards(MasterGuard)
@@ -54,7 +54,9 @@ export class MealController {
     }
 
     @Get('list')
-    async findAll(@Query() query: IQueryForList): Promise<IMealListResponse> {
+    async findAll(
+        @Query() query: IQueryForMealList
+    ): Promise<IMealListResponse> {
         return await this._mealService.findAll(query)
     }
 }
