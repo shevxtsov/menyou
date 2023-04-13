@@ -3,13 +3,13 @@ import { TypeOrmModule } from '@nestjs/typeorm'
 
 import { AppController } from './app.controller'
 import { AppService } from './app.service'
-import { MealModule } from './meal/meal.module'
-import { ProductModule } from './product/product.module'
-import { RoleModule } from './role/role.module'
-import { AuthMiddleware } from './user/middlewares/auth.middleware'
-import { UserModule } from './user/user.module'
-import { FilterModule } from './filter/filter.module'
-import { OrderModule } from './order/order.module'
+import { MealModule } from './main/meal/meal.module'
+import { ProductModule } from './main/product/product.module'
+import { RoleModule } from './auth/role/role.module'
+import { AuthMiddleware } from './auth/user/middlewares/auth.middleware'
+import { UserModule } from './auth/user/user.module'
+import { FilterModule } from './main/filter/filter.module'
+import { OrderModule } from './main/order/order.module'
 
 @Module({
     imports: [

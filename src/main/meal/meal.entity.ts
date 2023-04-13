@@ -6,8 +6,8 @@ import {
     PrimaryGeneratedColumn
 } from 'typeorm'
 
-import { ProductEntity } from 'src/product/product.entity'
-import { FilterEntity } from 'src/filter/filter.entity'
+import { ProductEntity } from 'src/main/product/product.entity'
+import { FilterEntity } from 'src/main/filter/filter.entity'
 
 @Entity({ name: 'meals' })
 export class MealEntity {

@@ -8,8 +8,8 @@ import {
 } from 'typeorm'
 
 import { TOrderStatus } from './types/orderStatus.type'
-import { UserEntity } from 'src/user/user.entity'
-import { MealEntity } from 'src/meal/meal.entity'
+import { UserEntity } from 'src/auth/user/user.entity'
+import { MealEntity } from 'src/main/meal/meal.entity'
 
 @Entity({ name: 'orders' })
 export class OrderEntity {

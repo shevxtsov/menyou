@@ -10,7 +10,7 @@ import { JWT_SECRET } from 'src/config'
 import { IUserResponse } from './types/userResponse.interface'
 import { LoginUserDto } from './dto/loginUser.dto'
 import { IUserListResponse } from './types/userListResponse.interface'
-import { RoleEntity } from 'src/role/role.entity'
+import { RoleEntity } from 'src/auth/role/role.entity'
 import { UpdateUserDto } from './dto/updateUser.dto'
 import { IQueryForList } from 'src/shared/types/queryForList.interface'
 

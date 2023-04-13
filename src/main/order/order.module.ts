@@ -4,7 +4,7 @@ import { TypeOrmModule } from '@nestjs/typeorm'
 import { OrderController } from './order.controller'
 import { OrderService } from './order.service'
 import { OrderEntity } from './order.entity'
-import { MealEntity } from 'src/meal/meal.entity'
+import { MealEntity } from 'src/main/meal/meal.entity'
 import { OrderStatusService } from './services/orderStatus.service'
 import { OrderSocketGateway } from './services/order.gateway'
 

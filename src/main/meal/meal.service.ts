@@ -2,13 +2,13 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { DeleteResult, In, Repository } from 'typeorm'
 
-import { ProductEntity } from 'src/product/product.entity'
+import { ProductEntity } from 'src/main/product/product.entity'
 import { CreateMealDto } from './dto/createMeal.dto'
 import { UpdateMealDto } from './dto/updateMeal.dto'
 import { MealEntity } from './meal.entity'
 import { IMealListResponse } from './types/mealListResponse.interface'
 import { IMealResponse } from './types/mealResponse.interface'
-import { FilterEntity } from 'src/filter/filter.entity'
+import { FilterEntity } from 'src/main/filter/filter.entity'
 import { IQueryForMealList } from './types/queryForMealList.interface'
 
 @Injectable()
