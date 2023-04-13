@@ -9,8 +9,8 @@ import {
 } from 'typeorm'
 import { hash } from 'bcrypt'
 
-import { RoleEntity } from 'src/role/role.entity'
-import { OrderEntity } from 'src/order/order.entity'
+import { RoleEntity } from 'src/auth/role/role.entity'
+import { OrderEntity } from 'src/main/order/order.entity'
 
 @Entity({ name: 'users' })
 export class UserEntity {

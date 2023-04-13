@@ -14,14 +14,14 @@ import { DeleteResult } from 'typeorm'
 
 import { OrderService } from './order.service'
 import { TransformBodyForDtoPipe } from 'src/shared/pipes/transformBodyForDto.pipe'
-import { User } from 'src/user/decorators/user.decorator'
+import { User } from 'src/auth/user/decorators/user.decorator'
 import { MasterGuard } from 'src/shared/guards/master.guard'
-import { UserEntity } from 'src/user/user.entity'
+import { UserEntity } from 'src/auth/user/user.entity'
 import { CreateOrderDto } from './dto/createOrder.dto'
 import { IQueryForList } from 'src/shared/types/queryForList.interface'
 import { IOrderListResponse } from './types/orderListResponse.interface'
 import { IOrderResponse } from './types/orderResponse.interface'
-import { IQueryGetSingle } from '../shared/types/queryGetSingle.interface'
+import { IQueryGetSingle } from '../../shared/types/queryGetSingle.interface'
 
 @Controller('order')
 @UseGuards(MasterGuard)
