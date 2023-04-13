@@ -74,11 +74,13 @@ export class MealService {
             .leftJoinAndSelect('meals.filter_list', 'filters')
 
         if (query.filter) {
-            const queryFilters = query.filter.split(',').map((f) => Number(f))
+            if (Boolean(parseInt(query.filter))) {
+                const filterIds = query.filter.split(',').map((f) => Number(f))
 
-            queryBuilder.andWhere('filters.id IN (:...filters)', {
-                filters: queryFilters
-            })
+                queryBuilder.andWhere('filters.id IN (:...filters)', {
+                    filters: filterIds
+                })
+            }
         }
 
         if (query.search) {
