@@ -7,6 +7,8 @@ export class UpdateUserDto implements ITransformEntityDto {
         'username',
         'firstname',
         'lastname',
+        'image',
+        'is_blocked',
         'role_list'
     ]
 

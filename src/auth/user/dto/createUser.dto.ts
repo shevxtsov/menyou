@@ -8,6 +8,7 @@ export class CreateUserDto implements ITransformEntityDto {
         'password',
         'firstname',
         'lastname',
+        'image',
         'role_list'
     ]
 
