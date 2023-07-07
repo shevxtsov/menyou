@@ -148,11 +148,13 @@ export class UserService {
             queryBuilder.skip(query.offset)
         }
 
-        const users = await queryBuilder.getMany()
+        const users = (await queryBuilder.getMany()).filter(
+            (user) => !user.is_admin
+        )
 
         return {
             users: users,
-            total: usersCount
+            total: usersCount - 1
         }
     }
 
