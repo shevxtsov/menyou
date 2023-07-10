@@ -3,10 +3,12 @@ import {
     Controller,
     Delete,
     Get,
+    HttpException,
+    HttpStatus,
     Param,
     Post,
+    Put,
     Query,
-    UseGuards,
     UsePipes,
     ValidationPipe
 } from '@nestjs/common'
@@ -15,16 +17,15 @@ import { DeleteResult } from 'typeorm'
 import { OrderService } from './order.service'
 import { TransformBodyForDtoPipe } from 'src/shared/pipes/transformBodyForDto.pipe'
 import { User } from 'src/auth/user/decorators/user.decorator'
-import { MasterGuard } from 'src/shared/guards/master.guard'
 import { UserEntity } from 'src/auth/user/user.entity'
 import { CreateOrderDto } from './dto/createOrder.dto'
 import { IQueryForList } from 'src/shared/types/queryForList.interface'
 import { IOrderListResponse } from './types/orderListResponse.interface'
 import { IOrderResponse } from './types/orderResponse.interface'
 import { IQueryGetSingle } from '../../shared/types/queryGetSingle.interface'
+import { IQueryUpdateOrder } from './types/updateOrder.interface'
 
 @Controller('order')
-@UseGuards(MasterGuard)
 export class OrderController {
     constructor(private readonly _orderService: OrderService) {}
 
@@ -33,11 +34,32 @@ export class OrderController {
     async createOrder(
         @User('id') currentUser: UserEntity,
         @Body('order') createOrderDto: CreateOrderDto
-    ) {
+    ): Promise<IOrderResponse> {
         const order = await this._orderService.createOrder(
             currentUser,
             createOrderDto
         )
+
+        return this._orderService.buildOrderResponse(order)
+    }
+
+    @Put(':id')
+    @UsePipes(new ValidationPipe())
+    async updateOrderStatus(
+        @Param('id') orderId: number,
+        @Query() query: IQueryUpdateOrder
+    ): Promise<IOrderResponse> {
+        const status = query.status
+        const orderStatuses = ['ACCEPTED', 'CANCELED', 'IN_PROCCESS', 'DONE']
+
+        if (!orderStatuses.includes(status)) {
+            throw new HttpException(
+                `status: ${status} is not allowed`,
+                HttpStatus.EXPECTATION_FAILED
+            )
+        }
+
+        const order = await this._orderService.updateStatus(orderId, status)
 
         return this._orderService.buildOrderResponse(order)
     }

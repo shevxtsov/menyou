@@ -7,12 +7,10 @@ import {
     Post,
     Put,
     Query,
-    UseGuards,
     UsePipes,
     ValidationPipe
 } from '@nestjs/common'
 
-import { MasterGuard } from 'src/shared/guards/master.guard'
 import { TransformBodyForDtoPipe } from 'src/shared/pipes/transformBodyForDto.pipe'
 import { DeleteResult } from 'typeorm'
 import { CreateMealDto } from './dto/createMeal.dto'
@@ -23,7 +21,6 @@ import { IMealResponse } from './types/mealResponse.interface'
 import { IQueryForMealList } from './types/queryForMealList.interface'
 
 @Controller('meal')
-@UseGuards(MasterGuard)
 export class MealController {
     constructor(private readonly _mealService: MealService) {}
 
