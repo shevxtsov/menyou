@@ -48,12 +48,6 @@ export class OrderService {
 
         const savedOrder = await this._orderRepository.save(newOrder)
 
-        if (savedOrder) {
-            this._orderStatusService.setOrderTimer(savedOrder, () => {
-                this.updateStatus(savedOrder.id, 'DONE')
-            })
-        }
-
         return savedOrder
     }
 
@@ -74,6 +68,10 @@ export class OrderService {
             case 'DONE':
                 order.is_active = false
                 break
+            case 'ACCEPTED':
+            case 'IN_PROCCESS':
+            case 'DELAYED':
+                order.is_active = true
             default:
                 break
         }
@@ -81,7 +79,6 @@ export class OrderService {
         const updatedOrder = await this._orderRepository.save(order)
 
         if (updatedOrder) {
-            this._orderStatusService.clearOrderTime(orderId)
             this._orderStatusService.onChangeOrderStatus(orderId, status)
         }
 
