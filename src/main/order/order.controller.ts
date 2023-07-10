@@ -6,7 +6,6 @@ import {
     Param,
     Post,
     Query,
-    UseGuards,
     UsePipes,
     ValidationPipe
 } from '@nestjs/common'
@@ -15,7 +14,6 @@ import { DeleteResult } from 'typeorm'
 import { OrderService } from './order.service'
 import { TransformBodyForDtoPipe } from 'src/shared/pipes/transformBodyForDto.pipe'
 import { User } from 'src/auth/user/decorators/user.decorator'
-import { MasterGuard } from 'src/shared/guards/master.guard'
 import { UserEntity } from 'src/auth/user/user.entity'
 import { CreateOrderDto } from './dto/createOrder.dto'
 import { IQueryForList } from 'src/shared/types/queryForList.interface'
@@ -24,7 +22,6 @@ import { IOrderResponse } from './types/orderResponse.interface'
 import { IQueryGetSingle } from '../../shared/types/queryGetSingle.interface'
 
 @Controller('order')
-@UseGuards(MasterGuard)
 export class OrderController {
     constructor(private readonly _orderService: OrderService) {}
 
