@@ -53,7 +53,13 @@ export class OrderController {
         @Query() query: IQueryUpdateOrder
     ): Promise<IOrderResponse> {
         const status = query.status
-        const orderStatuses = ['ACCEPTED', 'CANCELED', 'IN_PROCCESS', 'DONE']
+        const orderStatuses = [
+            'ACCEPTED',
+            'CANCELED',
+            'IN_PROCCESS',
+            'DONE',
+            'DELAYED'
+        ]
 
         if (!orderStatuses.includes(status)) {
             throw new HttpException(
