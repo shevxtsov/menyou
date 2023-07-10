@@ -3,8 +3,11 @@ import {
     Controller,
     Delete,
     Get,
+    HttpException,
+    HttpStatus,
     Param,
     Post,
+    Put,
     Query,
     UsePipes,
     ValidationPipe
@@ -20,6 +23,7 @@ import { IQueryForList } from 'src/shared/types/queryForList.interface'
 import { IOrderListResponse } from './types/orderListResponse.interface'
 import { IOrderResponse } from './types/orderResponse.interface'
 import { IQueryGetSingle } from '../../shared/types/queryGetSingle.interface'
+import { IQueryUpdateOrder } from './types/updateOrder.interface'
 
 @Controller('order')
 export class OrderController {
@@ -30,11 +34,32 @@ export class OrderController {
     async createOrder(
         @User('id') currentUser: UserEntity,
         @Body('order') createOrderDto: CreateOrderDto
-    ) {
+    ): Promise<IOrderResponse> {
         const order = await this._orderService.createOrder(
             currentUser,
             createOrderDto
         )
+
+        return this._orderService.buildOrderResponse(order)
+    }
+
+    @Put(':id')
+    @UsePipes(new ValidationPipe())
+    async updateOrderStatus(
+        @Param('id') orderId: number,
+        @Query() query: IQueryUpdateOrder
+    ): Promise<IOrderResponse> {
+        const status = query.status
+        const orderStatuses = ['ACCEPTED', 'CANCELED', 'IN_PROCCESS', 'DONE']
+
+        if (!orderStatuses.includes(status)) {
+            throw new HttpException(
+                `status: ${status} is not allowed`,
+                HttpStatus.EXPECTATION_FAILED
+            )
+        }
+
+        const order = await this._orderService.updateStatus(orderId, status)
 
         return this._orderService.buildOrderResponse(order)
     }

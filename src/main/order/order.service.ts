@@ -57,7 +57,10 @@ export class OrderService {
         return savedOrder
     }
 
-    public async updateStatus(orderId: number, status: TOrderStatus) {
+    public async updateStatus(
+        orderId: number,
+        status: TOrderStatus
+    ): Promise<OrderEntity> {
         const order = await this.findOrderById(orderId)
 
         if (!order) {
@@ -67,6 +70,7 @@ export class OrderService {
         order.status = status
 
         switch (status) {
+            case 'CANCELED':
             case 'DONE':
                 order.is_active = false
                 break
