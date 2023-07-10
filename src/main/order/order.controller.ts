@@ -9,6 +9,7 @@ import {
     Post,
     Put,
     Query,
+    UseGuards,
     UsePipes,
     ValidationPipe
 } from '@nestjs/common'
@@ -24,6 +25,7 @@ import { IOrderListResponse } from './types/orderListResponse.interface'
 import { IOrderResponse } from './types/orderResponse.interface'
 import { IQueryGetSingle } from '../../shared/types/queryGetSingle.interface'
 import { IQueryUpdateOrder } from './types/updateOrder.interface'
+import { MasterGuard } from 'src/shared/guards/master.guard'
 
 @Controller('order')
 export class OrderController {
@@ -44,6 +46,7 @@ export class OrderController {
     }
 
     @Put(':id')
+    @UseGuards(MasterGuard)
     @UsePipes(new ValidationPipe())
     async updateOrderStatus(
         @Param('id') orderId: number,

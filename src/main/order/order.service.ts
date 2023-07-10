@@ -74,6 +74,10 @@ export class OrderService {
             case 'DONE':
                 order.is_active = false
                 break
+            case 'ACCEPTED':
+            case 'IN_PROCCESS':
+            case 'DELAYED':
+                order.is_active = true
             default:
                 break
         }
