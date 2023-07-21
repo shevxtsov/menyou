@@ -131,6 +131,10 @@ export class UserService {
             )
         }
 
+        if (user.is_blocked) {
+            throw new HttpException('User is blocked', HttpStatus.FORBIDDEN)
+        }
+
         return user
     }
 
