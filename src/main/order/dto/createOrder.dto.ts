@@ -5,13 +5,16 @@ export class CreateOrderDto implements ITransformEntityDto {
     public readonly allowedProperties: string[] = [
         'name',
         'cooking_time',
-        'meal_list'
+        'meal_list',
+        'sum'
     ]
 
     @IsNotEmpty()
     readonly name: string
 
     readonly cooking_time: number
+
+    readonly sum: number
 
     @IsArray()
     @ArrayMinSize(1)
