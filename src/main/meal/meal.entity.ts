@@ -23,6 +23,9 @@ export class MealEntity {
     @Column({ default: '' })
     image: string
 
+    @Column({ default: 0 })
+    price: number
+
     @Column({ default: false })
     is_blocked: boolean
 

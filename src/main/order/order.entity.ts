@@ -28,6 +28,9 @@ export class OrderEntity {
     @Column()
     cooking_time: number
 
+    @Column({ default: 0 })
+    sum: number
+
     @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
     created_at: Date
 
