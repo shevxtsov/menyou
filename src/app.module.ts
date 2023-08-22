@@ -1,6 +1,7 @@
 import { MiddlewareConsumer, Module, RequestMethod } from '@nestjs/common'
 import { TypeOrmModule } from '@nestjs/typeorm'
 
+import ormconfig from './ormconfig'
 import { AppController } from './app.controller'
 import { AppService } from './app.service'
 import { MealModule } from './main/meal/meal.module'
@@ -13,12 +14,7 @@ import { OrderModule } from './main/order/order.module'
 
 @Module({
     imports: [
-        TypeOrmModule.forRoot({
-            type: 'postgres',
-            url: process.env.DATABASE_URL,
-            entities: [__dirname + '/**/*.entity.js'],
-            synchronize: false
-        }),
+        TypeOrmModule.forRoot(ormconfig),
         UserModule,
         RoleModule,
         ProductModule,
